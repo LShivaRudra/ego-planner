@@ -18,13 +18,14 @@
     <!-- camera pose: transform of camera frame in the world frame -->
     <!-- depth topic: depth image, 640x480 by default -->
     <!-- don't set cloud_topic if you already set these ones! -->
-    <arg name="camera_pose_topic" value="/pcl_render_node/camera_pose"/>
-    <arg name="depth_topic" value="/pcl_render_node/depth"/>
-
+    <!-- <arg name="camera_pose_topic" value="/pcl_render_node/camera_pose"/> -->
+    <arg name="camera_pose_topic" value="/t265/odom/sample"/>
+    <!-- <arg name="depth_topic" value="/pcl_render_node/depth"/> -->
+    <arg name="depth_topic" value="/d455/depth/image_rect_raw"/>
     <!-- topic of point cloud measurement, such as from LIDAR  -->
     <!-- don't set camera pose and depth, if you already set this one! -->
-    <arg name="cloud_topic" value="/pcl_render_node/cloud"/>
-
+    <!-- <arg name="cloud_topic" value="/pcl_render_node/cloud"/> -->
+    <arg name="cloud_topic" value="/d455/depth/color/points"/>
     <!-- intrinsic params of the depth camera -->
     <arg name="cx" value="321.04638671875"/>
     <arg name="cy" value="243.44969177246094"/>
