@@ -5,7 +5,7 @@
   <arg name="map_size_z" value=" 3.0"/>
 
   <!-- topic of your odometry such as VIO or LIO -->
-  <arg name="odom_topic" value="/visual_slam/odom" />
+  <arg name="odom_topic" value="/t265/odom/sample" />
 
   <!-- main algorithm params -->
   <include file="$(find ego_planner)/launch/advanced_param.xml">
@@ -41,7 +41,7 @@
 
     <!-- 1: use 2D Nav Goal to select goal  -->
     <!-- 2: use global waypoints below  -->
-    <arg name="flight_type" value="2" />
+    <arg name="flight_type" value="1" />
     
     <!-- global waypoints -->
     <!-- It generates a piecewise min-snap traj passing all waypoints -->
@@ -96,6 +96,7 @@
     <arg name="odometry_topic" value="$(arg odom_topic)" />
   </include>
 
-  <include file="$(find ego_planner)/launch/rviz.launch"/>
+  <!-- uncomment the below file to start rviz when u launch simple_run.launch. Leave it commented for hardware tests. -->
+  <!-- <include file="$(find ego_planner)/launch/rviz.launch"/> -->
 
 </launch>

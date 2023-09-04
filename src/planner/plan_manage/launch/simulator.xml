@@ -89,7 +89,7 @@
         <param name="so3_control/init_state_x" value="$(arg init_x)"/>
         <param name="so3_control/init_state_y" value="$(arg init_y)"/>
         <param name="so3_control/init_state_z" value="$(arg init_z)"/>
-        <remap from="~odom" to="/visual_slam/odom"/>
+        <remap from="~odom" to="/t265/odom/sample"/>
         <remap from="~position_cmd" to="/planning/pos_cmd"/>
         <remap from="~motors" to="motors"/>
         <remap from="~corrections" to="corrections"/>
@@ -112,7 +112,7 @@
   </node--> 
  
   <node pkg="odom_visualization" name="odom_visualization" type="odom_visualization" output="screen">
-        <remap from="~odom" to="/visual_slam/odom"/>
+        <remap from="~odom" to="/t265/odom/sample"/>
         <param name="color/a" value="1.0"/>    
         <param name="color/r" value="0.0"/>        
         <param name="color/g" value="0.0"/>        

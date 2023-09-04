@@ -1,0 +1,5 @@
+<launch>
+
+<include file="/home/drone/Documents/Realsense/src/realsense-ros/realsense2_camera/launch/rs_multiple_devices_t265_d455.launch"/>
+<include file="$(find ego_planner)/launch/simple_run.launch"/>
+</launch>
