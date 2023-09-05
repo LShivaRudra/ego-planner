@@ -1,0 +1,6 @@
+<launch>
+<include file="$(find ego_planner)/launch/simple_run.launch"/>
+<node pkg="tf" type="static_transform_publisher" name="world_map" args="0 0 0 0 0 0 /world /map 10"/> 
+<!-- <node pkg="tf" type="static_transform_publisher" name="world_odom" args="0 0 0 3.14 3.14 3.14 /world /odom 10"/>  -->
+<include file="$(find ego_planner)/launch/rviz.launch"/>
+</launch>

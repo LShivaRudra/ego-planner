@@ -5,10 +5,14 @@
 #include "std_msgs/Empty.h"
 #include "visualization_msgs/Marker.h"
 #include <ros/ros.h>
+#include "nav_msgs/Odometry.h"
+#include "std_msgs/Float64.h"
 
 ros::Publisher pos_cmd_pub;
+ros::Publisher pos_cmd_pub_odom;
 
 quadrotor_msgs::PositionCommand cmd;
+nav_msgs::Odometry cmd_odom;
 double pos_gain[3] = {0, 0, 0};
 double vel_gain[3] = {0, 0, 0};
 
@@ -226,7 +230,31 @@ void cmdCallback(const ros::TimerEvent &e)
 
   last_yaw_ = cmd.yaw;
 
+  cmd_odom.header.stamp = cmd.header.stamp;
+  cmd_odom.header.frame_id = cmd.header.frame_id;
+  cmd_odom.pose.pose.position.x = cmd.position.x;
+  cmd_odom.pose.pose.position.y = cmd.position.y;
+  cmd_odom.pose.pose.position.z = cmd.position.z;
+  
+  cmd_odom.twist.twist.linear.x = cmd.velocity.x;
+  cmd_odom.twist.twist.linear.y = cmd.velocity.y;
+  cmd_odom.twist.twist.linear.z = cmd.velocity.z;
+
+  cmd_odom.twist.twist.angular.x = cmd.acceleration.x;
+  cmd_odom.twist.twist.angular.y = cmd.acceleration.y;
+  cmd_odom.twist.twist.angular.z = cmd.acceleration.z;
+  
+  std_msgs::Float64 floatyaw;
+  floatyaw.data = cmd.yaw;
+
+  std_msgs::Float64 floatyaw_dot;
+  floatyaw_dot.data = cmd.yaw_dot;
+
+  cmd_odom.pose.pose.orientation.x = floatyaw.data;
+  cmd_odom.pose.pose.orientation.y = floatyaw_dot.data;
+
   pos_cmd_pub.publish(cmd);
+  pos_cmd_pub_odom.publish(cmd_odom);
 }
 
 int main(int argc, char **argv)
@@ -238,6 +266,8 @@ int main(int argc, char **argv)
   ros::Subscriber bspline_sub = node.subscribe("planning/bspline", 10, bsplineCallback);
 
   pos_cmd_pub = node.advertise<quadrotor_msgs::PositionCommand>("/position_cmd", 50);
+
+  pos_cmd_pub_odom = node.advertise<nav_msgs::Odometry>("/position_odom_cmd", 50);
 
   ros::Timer cmd_timer = node.createTimer(ros::Duration(0.01), cmdCallback);
 
