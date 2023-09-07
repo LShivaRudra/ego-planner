@@ -85,7 +85,7 @@
   </node>
 
   <!-- use simulator -->
-  <include file="$(find ego_planner)/launch/simulator.xml">
+  <!-- <include file="$(find ego_planner)/launch/simulator.xml">
     <arg name="map_size_x_" value="$(arg map_size_x)"/>
     <arg name="map_size_y_" value="$(arg map_size_y)"/>
     <arg name="map_size_z_" value="$(arg map_size_z)"/>
@@ -94,7 +94,7 @@
     <arg name="min_dist" value="1.2"/>
 
     <arg name="odometry_topic" value="$(arg odom_topic)" />
-  </include>
+  </include> -->
 
   <!-- uncomment the below file to start rviz when u launch simple_run.launch. Leave it commented for hardware tests. -->
   <!-- <include file="$(find ego_planner)/launch/rviz.launch"/> -->
