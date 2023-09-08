@@ -110,7 +110,7 @@ class Controller:
         self.sp.pose.position.z = self.ALT_SP
         self.local_pos = Point(0.0, 0.0, self.ALT_SP)
 
-        self.sv.twist.linear
+        # self.sv.twist.linear
 
         # speed of the drone is set using MPC_XY_CRUISE parameter in MAVLink
         # using QGroundControl. By default it is 5 m/s.
@@ -165,8 +165,11 @@ class Controller:
         self.sa.vector.y = msg.twist.twist.angular.y
         self.sa.vector.z = msg.twist.twist.angular.z
 
-        self.sp.pose.orientation = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)
+        self.sp.pose.orientation.w = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[3]
         self.sv.twist.angular.z = msg.pose.pose.orientation.y
+        # self.sp.pose.orientation
+        print("Hi")
+        # print(" ")
 
     ## Drone State callback
     def stateCb(self, msg):
@@ -176,14 +179,14 @@ class Controller:
     def updateSp(self):
         self.sp.pose.position.x = self.local_pos.x
         self.sp.pose.position.y = self.local_pos.y
-        # self.sp.position.z = self.local_pos.z
+        self.sp.pose.position.z = self.local_pos.z
 
 # Main function
 def main():
     rospy.init_node('setpoint_node', anonymous=True)
     modes = fcuModes()  #flight modes
     cnt = Controller()  # controller object
-    rate = rospy.Rate(30)
+    rate = rospy.Rate(50)
     rospy.Subscriber('mavros/state', State, cnt.stateCb)
 
     # Subscribe to drone's local position
@@ -212,13 +215,10 @@ def main():
     cnt.sp.pose.orientation.z = 0
     cnt.sp.pose.orientation.w = -1
 
-    k=0
-    while k<20:
-        sp_pub.publish(cnt.sp)
-        sv_pub.publish(cnt.sv)
-        sa_pub.publish(cnt.sa)
-        rate.sleep()
-        k = k + 1
+    sp_pub.publish(cnt.sp)
+    # sv_pub.publish(cnt.sv)
+    # sa_pub.publish(cnt.sa)
+    rate.sleep()
 
     modes.setOffboardMode()
     print("---------")

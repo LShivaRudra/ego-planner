@@ -5,5 +5,5 @@
 <!-- <node pkg="tf" type="static_transform_publisher" name="baselink_camlink" args="0 0 0 0 0 0 /base_link /camera 10"/>  -->
 <!-- <node pkg="tf" type="static_transform_publisher" name="world_odom" args="0 0 0 3.14 3.14 3.14 /world /odom 10"/>  -->
 <include file="$(find ego_planner)/launch/rviz.launch"/>
-<node pkg="tf" type="static_transform_publisher" name="bbtf" args="0 0 0 0 0 0 base base_link 10"/> 
+<!-- <node pkg="tf" type="static_transform_publisher" name="bbtf" args="0 0 0 0 0 0 base base_link 10"/>  -->
 </launch>
