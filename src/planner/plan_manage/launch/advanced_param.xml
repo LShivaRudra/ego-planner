@@ -41,8 +41,8 @@
     <remap from="/odom_world" to="$(arg odometry_topic)"/>
     <remap from="/grid_map/odom" to="$(arg odometry_topic)"/>
     <remap from="/grid_map/cloud" to="$(arg cloud_topic)"/>
-    <remap from = "/grid_map/pose"   to = "$(arg camera_pose_topic)"/> 
-    <remap from = "/grid_map/depth" to = "$(arg depth_topic)"/>
+    <!-- <remap from = "/grid_map/pose"   to = "$(arg camera_pose_topic)"/>  -->
+    <!-- <remap from = "/grid_map/depth" to = "$(arg depth_topic)"/> -->
 
     <!-- planning fsm -->
     <param name="fsm/flight_type" value="$(arg flight_type)" type="int"/>

@@ -725,13 +725,53 @@ void GridMap::odomCallback(const nav_msgs::OdometryConstPtr &odom)
   md_.camera_pos_(2) = odom->pose.pose.position.z;
 
   md_.has_odom_ = true;
+  
+  // Eigen::Quaterniond quaternion(odom->pose.pose.orientation.x,odom->pose.pose.orientation.y,odom->pose.pose.orientation.z,odom->pose.pose.orientation.w);
+  // Eigen::Matrix3d rotation_matrix = quaternion.toRotationMatrix();
+  // md_.transform.block<3, 3>(0, 0) = rotation_matrix;
+  // md_.transform.block<3, 1>(0, 3) << md_.camera_pos_(0), md_.camera_pos_(1), md_.camera_pos_(2);
+  Eigen::Quaterniond body_q = Eigen::Quaterniond(odom->pose.pose.orientation.w,
+                                                 odom->pose.pose.orientation.x,
+                                                 odom->pose.pose.orientation.y,
+                                                 odom->pose.pose.orientation.z);    
+  Eigen::Matrix3d body_r_m = body_q.toRotationMatrix();   
+  // Eigen::Matrix4d body2world;
+  md_.transform.block<3, 3>(0, 0) = body_r_m;
+  md_.transform(0, 3) = odom->pose.pose.position.x;
+  md_.transform(1, 3) = odom->pose.pose.position.y;
+  md_.transform(2, 3) = odom->pose.pose.position.z;
+  md_.transform(3, 3) = 1.0;
+  // std::cout << "Transformation Matrix:\n";
+  //   for (int i = 0; i < 4; i++) {
+  //       for (int j = 0; j < 4; j++) {
+  //           std::cout << md_.transform(i, j) << "\t";
+  //       }
+  //       std::cout << std::endl;
+  //   }
 }
 
 void GridMap::cloudCallback(const sensor_msgs::PointCloud2ConstPtr &img)
 {
+  
+  // cout<< "in callback" << endl;
+  // pcl::PointCloud<pcl::PointXYZ>::Ptr inlatest_cloud,latest_cloud;
+  // pcl::PointCloud<pcl::PointXYZ>::Ptr inlatest_cloud = boost::make_shared<pcl::PointCloud<pcl::PointXYZ>>();
+  pcl::PointCloud<pcl::PointXYZ>::Ptr inlatest_cloud(new pcl::PointCloud<pcl::PointXYZ>());
+  pcl::PointCloud<pcl::PointXYZ>::Ptr latest_cloud(new pcl::PointCloud<pcl::PointXYZ>());
 
-  pcl::PointCloud<pcl::PointXYZ> latest_cloud;
-  pcl::fromROSMsg(*img, latest_cloud);
+  pcl::fromROSMsg(*img, *inlatest_cloud);
+
+
+  pcl::transformPointCloud (*inlatest_cloud, *latest_cloud, md_.transform);
+  std::cout << "Point Cloud Data1:\n";
+  for (const pcl::PointXYZ& point : inlatest_cloud->points) {
+      std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
+  }
+  cout<<endl;
+  std::cout << "Point Cloud Data2:\n";
+  for (const pcl::PointXYZ& point : latest_cloud->points) {
+      std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
+  }
 
   md_.has_cloud_ = true;
 
@@ -741,7 +781,7 @@ void GridMap::cloudCallback(const sensor_msgs::PointCloud2ConstPtr &img)
     return;
   }
 
-  if (latest_cloud.points.size() == 0)
+  if (latest_cloud->points.size() == 0)
     return;
 
   if (isnan(md_.camera_pos_(0)) || isnan(md_.camera_pos_(1)) || isnan(md_.camera_pos_(2)))
@@ -766,9 +806,9 @@ void GridMap::cloudCallback(const sensor_msgs::PointCloud2ConstPtr &img)
   max_y = mp_.map_min_boundary_(1);
   max_z = mp_.map_min_boundary_(2);
 
-  for (size_t i = 0; i < latest_cloud.points.size(); ++i)
+  for (size_t i = 0; i < latest_cloud->points.size(); ++i)
   {
-    pt = latest_cloud.points[i];
+    pt = latest_cloud->points[i];
     p3d(0) = pt.x, p3d(1) = pt.y, p3d(2) = pt.z;
 
     /* point inside update range */
@@ -921,7 +961,7 @@ void GridMap::publishMapInflate(bool all_info)
   pcl::toROSMsg(cloud, cloud_msg);
   map_inf_pub_.publish(cloud_msg);
 
-  // ROS_INFO("pub map");
+  ROS_INFO("pub map");
 }
 
 void GridMap::publishUnknown()
@@ -983,6 +1023,7 @@ void GridMap::depthOdomCallback(const sensor_msgs::ImageConstPtr &img,
                                 const nav_msgs::OdometryConstPtr &odom)
 {
   /* get pose */
+  cout<< "depthOdom"<<endl;
   Eigen::Quaterniond body_q = Eigen::Quaterniond(odom->pose.pose.orientation.w,
                                                  odom->pose.pose.orientation.x,
                                                  odom->pose.pose.orientation.y,
@@ -1009,7 +1050,8 @@ void GridMap::depthOdomCallback(const sensor_msgs::ImageConstPtr &img,
     (cv_ptr->image).convertTo(cv_ptr->image, CV_16UC1, mp_.k_depth_scaling_factor_);
   }
   cv_ptr->image.copyTo(md_.depth_image_);
-
+  
+  
   md_.occ_need_update_ = true;
 }
 

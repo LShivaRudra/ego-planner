@@ -16,6 +16,8 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/common/transforms.h>
+#include <boost/make_shared.hpp>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
@@ -100,7 +102,7 @@ struct MappingData {
   cv::Mat depth_image_, last_depth_image_;
   int image_cnt_;
 
-  Eigen::Matrix4d cam2body_;
+  Eigen::Matrix4d cam2body_ , transform=Eigen::Matrix4d::Identity();
 
   // flags of map state
 
