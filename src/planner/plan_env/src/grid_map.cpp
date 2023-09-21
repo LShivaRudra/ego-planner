@@ -761,17 +761,17 @@ void GridMap::cloudCallback(const sensor_msgs::PointCloud2ConstPtr &img)
 
   pcl::fromROSMsg(*img, *inlatest_cloud);
 
-
-  pcl::transformPointCloud (*inlatest_cloud, *latest_cloud, md_.transform);
-  std::cout << "Point Cloud Data1:\n";
-  for (const pcl::PointXYZ& point : inlatest_cloud->points) {
-      std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
-  }
-  cout<<endl;
-  std::cout << "Point Cloud Data2:\n";
-  for (const pcl::PointXYZ& point : latest_cloud->points) {
-      std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
-  }
+  Eigen::Matrix4d point_T = md_.transform*md_.cam2body_;
+  pcl::transformPointCloud (*inlatest_cloud, *latest_cloud, point_T);
+  // std::cout << "Point Cloud Data1:\n";
+  // for (const pcl::PointXYZ& point : inlatest_cloud->points) {
+  //     std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
+  // }
+  // cout<<endl;
+  // std::cout << "Point Cloud Data2:\n";
+  // for (const pcl::PointXYZ& point : latest_cloud->points) {
+  //     std::cout << "X: " << point.x << ", Y: " << point.y << ", Z: " << point.z << std::endl;
+  // }
 
   md_.has_cloud_ = true;
 
@@ -961,7 +961,7 @@ void GridMap::publishMapInflate(bool all_info)
   pcl::toROSMsg(cloud, cloud_msg);
   map_inf_pub_.publish(cloud_msg);
 
-  ROS_INFO("pub map");
+  // ROS_INFO("pub map");
 }
 
 void GridMap::publishUnknown()
@@ -1023,7 +1023,7 @@ void GridMap::depthOdomCallback(const sensor_msgs::ImageConstPtr &img,
                                 const nav_msgs::OdometryConstPtr &odom)
 {
   /* get pose */
-  cout<< "depthOdom"<<endl;
+  // cout<< "depthOdom"<<endl;
   Eigen::Quaterniond body_q = Eigen::Quaterniond(odom->pose.pose.orientation.w,
                                                  odom->pose.pose.orientation.x,
                                                  odom->pose.pose.orientation.y,

@@ -131,7 +131,7 @@ class Controller:
         self.qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
         self.qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
         self.qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
-        print(self.qx, self.qy, self.qz, self.qw)
+        # print(self.qx, self.qy, self.qz, self.qw)
         
         return [self.qx, self.qy, self.qz, self.qw]
 
@@ -169,7 +169,7 @@ class Controller:
         self.sp.pose.orientation.w = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[3]
         self.sv.twist.angular.z = msg.pose.pose.orientation.y
         # self.sp.pose.orientation
-        print("Hi")
+        # print("Hi")
         # print(" ")
 
     ## Drone State callback
@@ -233,7 +233,7 @@ def main():
         sv_pub.publish(cnt.sv)
         sa_pub.publish(cnt.sa)
         rate.sleep()
-        print("while loop")
+        # print("while loop")
         
 
 if __name__ == '__main__':
