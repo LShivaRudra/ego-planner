@@ -166,6 +166,9 @@ class Controller:
         self.sa.vector.y = msg.twist.twist.angular.y
         self.sa.vector.z = msg.twist.twist.angular.z
 
+        self.sp.pose.orientation.x = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[0]
+        self.sp.pose.orientation.y = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[1]
+        self.sp.pose.orientation.z = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[2]
         self.sp.pose.orientation.w = self.get_quaternion_from_euler(0,0,msg.pose.pose.orientation.x)[3]
         self.sv.twist.angular.z = msg.pose.pose.orientation.y
         # self.sp.pose.orientation
